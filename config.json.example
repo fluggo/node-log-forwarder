@@ -1,0 +1,105 @@
+// This is a sample configuration file for the forwarder. Copy
+// this to config.json to create your configuration file.
+//
+// Settings marked "(dynamic)" can be changed while the program
+// is running and will take effect when the file is saved.
+// Settings marked "(static)" should not be changed while the
+// program is running.
+
+{
+  // The name for this instance, used in logging statistics (dynamic)
+  "name": "test-logger",
+
+  // Map of input names to modules (dynamic)
+  //
+  // Inputs can be added or removed at run-time.
+  "inputs": {
+
+    // Name of the input (static). Changes to the config are matched back
+    // to the input module by name, so don't change this while the
+    // forwarder is running.
+    "bunyan": {
+
+      // Path to the module that provides the input (static)
+      //
+      // Different modules will have different options. This input uses
+      // tcp-lines, which accepts TCP connections, splits input by newlines,
+      // and provides each message to the given user script.
+      "module": "./inputs/tcp-lines.js",
+
+      // Path to the user script (dynamic)
+      //
+      // This script decides how each message is processed. Changes to this
+      // path or to the script are reflected as soon as they are seen.
+      // For tcp-lines, see sample scripts msvistalog.js, bunyan.js, or cylance.js.
+      "script": "sample-user-scripts/bunyan.js",
+
+      // Host to bind the socket to (optional, dynamic); if unspecified, binds
+      // to all interfaces
+      // "host": "localhost"
+
+      // Port to bind the socket to (dynamic)
+      "port": 5022
+    },
+    "syslog": {
+      // Same as above, but for a UDP input.
+      "module": "./inputs/udp.js",
+      "script": "sample-user-scripts/syslog.js",
+
+      // Optional "host"
+      // "host": "localhost"
+
+      "port": 5144
+    }
+  },
+
+  // Number of workers spawned (dynamic).
+  //
+  // Each worker can use up to one CPU core, so set this to the
+  // number of cores available on your system. It can be adjusted
+  // at run time.
+  "workerCount": 2,
+
+  // Log file writing
+  "file": {
+    // The base path to which log files will be written; paths outside this are not allowed
+    "basePath": "/home/bcrowell/software/node-log-forwarder/logs"
+  },
+
+  // SMTP support (optional, dynamic)
+  "mail": {
+    // Transport options, either a URL or an object (dynamic)
+    // See https://www.npmjs.com/package/nodemailer#set-up-smtp
+    "transportOptions": "smtp://my.mail.server"
+  },
+
+  // IRC support (optional, dynamic)
+  "irc": {
+    "server": "myirc.company.net",
+    "nick": "logbot",
+
+    // Options for the IRC library; see https://node-irc.readthedocs.org/en/latest/API.html#client
+    "options": {
+      // These are the defaults we use
+      // "port": 6667,
+      // "encoding": "utf8",
+      // "autoRejoin": true
+      //"debug": true
+    }
+  },
+
+  // Elasticsearch support (optional, dynamic)
+  "elasticsearch": {
+    "clientSettings": {
+      "hosts": [
+        "http://10.0.0.1:9200",
+        "http://10.0.0.2:9200"
+      ],
+      "apiVersion": "5.0",
+      "sniffOnStart": true,
+      "sniffInterval": 60000,
+      "sniffOnConnectionFault": true
+    },
+    "bulkSizeMegabytes": 10
+  }
+}
